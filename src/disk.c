@@ -29,7 +29,10 @@
  *	Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
 #include <doslib.h>
+
 #include "fsck.h"
 
 disk *init_disk(int drive)
@@ -63,6 +66,8 @@ disk *init_disk(int drive)
   work->FAT.buf = (FATbuf *)Malloc(sizeof(FATbuf) * work->cluster.num);
 #ifdef DETERMINE_LITTLE_ENDIAN_BY_OPTION
   work->FAT.little_endian = flags.little_endian;
+#else
+  work->FAT.little_endian = (dpbbuf.shift & 0x80) ? 1 : 0;
 #endif
 #ifdef DEBUG
   if (debug.DPB)
@@ -132,7 +137,7 @@ disk *init_disk(int drive)
       return work;
     }
 #endif
-  if (work->cluster.num > 0xff7) /* クラスタ数は 1.5 bytes に収まらない */
+  if (work->cluster.num > 0xff6) /* クラスタ数は 1.5 bytes に収まらない */
     {
       /* 間違いなく 2 bytes FAT である */
       if (flags.is_15bytes) /* 無茶な事は言わないで */

@@ -42,10 +42,13 @@
  *	Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
 #include <iocslib.h>
+#include <jctype.h>
+
 #include "fsck.h"
 #include "dir.h"
-#include "jctype.h"
 
 unsigned long current_datetime(void)
 {
@@ -168,10 +171,8 @@ static int is_legal_filename(direntry *entry)
 	  while (++offset < 8)
 	    if (entry->fileName[offset] != ' ')
 	      return 0;
-	  for (offset = 0; offset < 10; ++offset)
-	    if (entry->fileName2[offset] != 0)
-	      return 0;
-	  return 1;
+	  /* 先頭が $00 なら良しとする(Windows の拡張ファイルエントリ対策) */
+	  return (entry->fileName2[0] == 0) ? 1 : 0;
 	}
       if (is_illegal_code(data, &last_is_kanji))
 	return 0;
@@ -183,6 +184,9 @@ static int is_legal_filename(direntry *entry)
 	{
 	  if (is_illegal_code('1', &last_is_kanji))
 	    return 0;
+	  /* 先頭が $00 なら良しとする(Windows の拡張ファイルエントリ対策) */
+	  if (offset == 0)
+	    return 1;
 	  while (++offset < 10)
 	    if (entry->fileName2[offset] != 0)
 	      return 0;

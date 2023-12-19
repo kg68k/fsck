@@ -64,23 +64,25 @@
  *	Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
 #include <stdio.h>
 #include <iocslib.h>
 #include <string.h>
+
 #include "fsck.h"
 
 #ifdef DEBUG
 debug_flags debug;
 #endif
 normal_flags flags;
-static char *progname;
+static const char progname[] = "fsck";
 
 static void volatile usage(void)
 {
   if (flags.english)
     {
-      printf("Usage: %s [-options] A:\n", progname);
-      printf("-options (changeovering switch) :\n");
+      printf("Usage: %s [-options] d:\n", progname);
 #ifdef FSCK
       printf("\t-check-reading-sectors\tcheck sector-read (default don't ckeck),\n");
       printf("\t-check-writing-sectors\tcheck sector-write (don't ckeck),\n");
@@ -113,8 +115,7 @@ static void volatile usage(void)
     }
   else
     {
-      printf("使用法: %s [-オプション] A:\n", progname);
-      printf("-オプション (切り替えスイッチ)\n");
+      printf("使用法: %s [-オプション] d:\n", progname);
 #ifdef FSCK
       printf("\t-check-reading-sectors\tセクタリードチェックを行なう（デフォルトはチェックしない）\n");
       printf("\t-check-writing-sectors\tセクタライトチェックを行なう（チェックしない）\n");
@@ -159,7 +160,8 @@ int main(int argc, char *argv[])
 #ifdef DUMPFAT
   B_PRINT("X68k FAT Dump and Writer Ver 1.03");
 #endif
-  B_PRINT(" Copyright (C) 1992,93 by Ｅｘｔ(T.Kawamoto)\r\n");
+  B_PRINT(" Copyright (C) 1992,93 by Ｅｘｔ(T.Kawamoto)\r\n"
+	  "                     patchlevel 3 Copyright (C) 2023 by TcbnErik\r\n");
 
   setup();
   drive = -1;
@@ -185,7 +187,6 @@ int main(int argc, char *argv[])
 #endif
   flags.is_2bytes = 0;
   flags.is_15bytes = 0;
-  progname = argv[0];
   while (*++argv)
     {
       if (argv[0][0] == '-')
@@ -305,12 +306,10 @@ int main(int argc, char *argv[])
 	      break;
 #endif
 	    case 'w':
-	      if (strcmp(argv[0] + 1, "writing") == 0)
+	      if (strcmp(argv[0], "-writing") == 0)
 		flags.writing++;
-	      break;
-	    case 'W':
-	      if (strcmp(argv[0] + 1, "WRITING") == 0)
-		flags.writing++;
+	      else
+		usage();
 	      break;
 	    default:
 	      usage();

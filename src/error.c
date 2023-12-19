@@ -41,12 +41,15 @@
  *	Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
+register unsigned short code asm("d7");
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <doslib.h>
-#include "fsck.h"
 
-register unsigned short code asm("d7");
+#include "fsck.h"
 
 static short error_code;
 static short ignore_flag = 0;
@@ -148,7 +151,7 @@ static int key_handler()
   cleanup_exit(0);
 }
 
-static void catchD7()
+static void __interrupt catchD7()
 {
   error_code = code & 0xff;
   if (key_handler())
@@ -161,7 +164,7 @@ static void catchD7()
   __builtin_saveregs();
 }
 
-static void error_handler(void)
+static void __interrupt error_handler(void)
 {
   if (code < 0x1000)
     __builtin_saveregs(old_handler);

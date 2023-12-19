@@ -22,8 +22,11 @@
  *	Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
 #include <iocslib.h>
 #include <stdio.h>
+
 #include "fsck.h"
 
 int escape()
@@ -129,7 +132,7 @@ void prerr_datetime(unsigned long datetime)
 
   print_pre("    *** ");
   value = (datetime >> 25) & 0x7f;
-  printf("%2d-", value + 80);
+  printf("%d-", value + 1980);
   value = (datetime >> 21) & 0x0f;
   printf("%02d-", value);
   value = (datetime >> 16) & 0x1f;

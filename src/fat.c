@@ -36,8 +36,11 @@
  *	Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
 #include <stdlib.h>
 #include <doslib.h>
+
 #include "fsck.h"
 
 void remove_bad_cluster(disk *disk_ptr)
@@ -102,9 +105,6 @@ void read_FAT(disk *disk_ptr)
   dst = disk_ptr->FAT.buf;
   if (disk_ptr->FAT.is_2bytes)
     {
-#ifndef DETERMINE_LITTLE_ENDIAN_BY_OPTION
-      disk_ptr->FAT.little_endian = (*src == 0xf0);
-#endif
       if (disk_ptr->FAT.little_endian)
 	{
 	  for (no = 0; no < disk_ptr->cluster.num; ++no)
