@@ -14,7 +14,7 @@ CFLAGS	= -O -Wall -fomit-frame-pointer -fstrength-reduce -D__DOS_INLINE__ -D__IO
 	 -DFSCK
 
 
-SRCS = main.c disk.c sector.c root.c fat.c dump.c dir.c dirsub.c collect.c malloc.c print.c error.c
+SRCS = main.c disk.c sector.c root.c fat.c dir.c dirsub.c collect.c malloc.c print.c error.c
 OBJS = $(subst .c,.o,$(SRCS))
 
 TARGETS = fsck.x
