@@ -334,6 +334,9 @@ int main(int argc, char *argv[]) {
     }
   }
   if (drive == -1) usage();
+
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   ptr = init_disk(drive);
   if ((int)ptr < 0) {
     if ((int)ptr == ERROR_BAD_FAT_SIZE)
