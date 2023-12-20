@@ -1,4 +1,4 @@
-# HAS060X.X
+# fsck.x - X68k File System Checker
 X68k File System Checker Ver 1.03の改造版です。  
 無保証につき各自の責任で使用して下さい。
 

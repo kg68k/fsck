@@ -72,11 +72,34 @@ unsigned long current_datetime(void) {
   return datetime;
 }
 
-directory *rootdir(disk *disk_ptr) {
-  directory *ptr;
-  char *str;
+#define PATHDELIM_LEN (1)
+#define FILENAME_MAXLEN (18 + 1 + 3)
 
-  ptr = Malloc(sizeof(directory));
+static directory *alloc_directroy(const char *dir_path) {
+  directory *dirptr = Malloc(sizeof(*dirptr));
+
+  size_t dirlen = dir_path ? strlen(dir_path) : 0;
+  char *buf = Malloc(dirlen + PATHDELIM_LEN + FILENAME_MAXLEN + 1);
+  buf[0] = '\0';
+
+  dirptr->dir_path = dir_path;
+  dirptr->file_path = buf;
+
+  return dirptr;
+}
+
+static char *create_drivename(int drive_no) {
+  char *s = Malloc(3);
+  s[0] = 'a' + drive_no;
+  s[1] = ':';
+  s[2] = 0;
+  return s;
+}
+
+directory *rootdir(disk *disk_ptr) {
+  char *str = create_drivename(disk_ptr->drive_no);
+  directory *ptr = alloc_directroy(str);
+
   ptr->buffer = Malloc(disk_ptr->sector.length);
   ptr->sector = disk_ptr->root.top_sector;
   ptr->offset = 0;
@@ -89,19 +112,13 @@ directory *rootdir(disk *disk_ptr) {
   ptr->offset -= sizeof(direntry);
   ptr->total_offset--;
   ptr->entry--;
-  str = Malloc(3);
-  str[0] = 'a' + disk_ptr->drive_no;
-  str[1] = ':';
-  str[2] = 0;
-  ptr->dir_path = str;
   return ptr;
 }
 
 directory *subdir(disk *disk_ptr, const char *dir_path,
                   unsigned short cluster) {
-  directory *ptr;
+  directory *ptr = alloc_directroy(dir_path);
 
-  ptr = Malloc(sizeof(directory));
   ptr->buffer = Malloc(disk_ptr->cluster.length);
   ptr->cluster = cluster;
   ptr->offset = 0;
@@ -114,13 +131,13 @@ directory *subdir(disk *disk_ptr, const char *dir_path,
   ptr->offset -= sizeof(direntry);
   ptr->total_offset--;
   ptr->entry--;
-  ptr->dir_path = dir_path;
   return ptr;
 }
 
 void freedir(directory *ptr) {
   if (ptr->buffer) Free(ptr->buffer);
   if (ptr->sector != -1 && ptr->dir_path) Free((void *)ptr->dir_path);
+  if (ptr->file_path) Free(ptr->file_path);
   Free(ptr);
 }
 
@@ -343,9 +360,8 @@ int nextfreeentry(disk *disk_ptr, directory *ptr) {
 }
 
 directory *copyentry(directory *source) {
-  directory *destination;
+  directory *destination = alloc_directroy(source->file_path);
 
-  destination = Malloc(sizeof(directory));
   destination->buffer = NULL;
   destination->sector = source->sector;
   destination->offset = source->offset;
@@ -354,7 +370,6 @@ directory *copyentry(directory *source) {
   destination->entry = NULL;
   destination->entry_attribute_memo = source->entry_attribute_memo;
   destination->entry_cluster_memo = source->entry_cluster_memo;
-  strcpy(destination->file_path, source->file_path);
   destination->dir_path = NULL;
   return destination;
 }

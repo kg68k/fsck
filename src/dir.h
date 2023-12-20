@@ -31,6 +31,8 @@
  * Initial revision
  */
 
+/* Copyright (C) 2023 TcbnErik */
+
 #ifndef DIR_H
 #define DIR_H
 
@@ -112,7 +114,7 @@ typedef struct {
   unsigned char entry_attribute_memo;
   unsigned short entry_cluster_memo;
   unsigned short batting_cluster_max;
-  char file_path[84];
+  char *file_path;
   unsigned char *buffer;
 } directory;
 
