@@ -4,6 +4,11 @@ ifeq ($(notdir $(CURDIR)),src)
 $(error do not execute make in src directory)
 endif
 
+U8TOSJ = u8tosj
+SRCDIR_MK = ../srcdir.mk
+SRC_DIR = ../src
+-include $(SRCDIR_MK)
+
 CC	= gcc
 CFLAGS	= -O -Wall -fomit-frame-pointer -fstrength-reduce -D__DOS_INLINE__ -D__IOCS_INLINE__ \
 	 -DFSCK
@@ -15,12 +20,30 @@ OBJS = $(subst .c,.o,$(SRCS))
 TARGETS = fsck.x
 
 
-.PHONY : all clean
+.PHONY : all clean archive
 
 all: $(TARGETS)
 
 clean:
 	rm -f $(TARGETS) $(OBS)
+
+
+archive: fsck_p.zip
+
+fsck_p.zip: fsck.x README.txt CHANGELOG.txt
+	strip fsck.x
+	rm -f $@
+	zip -9 $@ $^
+
+#README.txt: $(SRC_DIR)/../README.md
+#	$(U8TOSJ) < $^ >! $@
+#
+#CHANGELOG.txt: $(SRC_DIR)/../CHANGELOG.md
+#	$(U8TOSJ) < $^ >! $@
+
+%.txt: $(SRC_DIR)/../%.md
+	$(U8TOSJ) < $^ >! $@
+
 
 fsck.x: $(OBJS)
 	$(CC) -o $@ $^

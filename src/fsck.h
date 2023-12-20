@@ -6,42 +6,47 @@
  * $Revision: 1.4 $
  * $Date: 1993/12/12 14:01:52 $
  * $Log: fsck.h,v $
- *	Revision 1.4  1993/12/12  14:01:52  kawamoto
- *	Ver 1.02 メディアバイト 0xfff0 (IBM format MO) に対応化。
+ * Revision 1.4  1993/12/12  14:01:52  kawamoto
+ * Ver 1.02 メディアバイト 0xfff0 (IBM format MO) に対応化。
  *
- *	Revision 1.3  1993/10/24  13:19:10  kawamoto
- *	lost+found 関係のバグフィックス
- *	-isLittleEndian サポート
+ * Revision 1.3  1993/10/24  13:19:10  kawamoto
+ * lost+found 関係のバグフィックス
+ * -isLittleEndian サポート
  *
- *	Revision 1.2  1993/04/17  11:28:45  src
- *	directory にループがある場合に暴走するのを直した
- *	正式版（Ver 1.00）
+ * Revision 1.2  1993/04/17  11:28:45  src
+ * directory にループがある場合に暴走するのを直した
+ * 正式版（Ver 1.00）
  *
- *	Revision 1.1  1993/03/26  22:48:34  src
- *	version 0.05a
+ * Revision 1.1  1993/03/26  22:48:34  src
+ * version 0.05a
  *
- *	Revision 2.3  1993/01/09  09:46:01  kawamoto
- *	version 0.5
+ * Revision 2.3  1993/01/09  09:46:01  kawamoto
+ * version 0.5
  *
- *	Revision 2.2  1993/01/05  17:42:23  kawamoto
- *	デバッグオプションを外して再コンパイル
- *	「ドライブが用意されていない」エラーを回避
+ * Revision 2.2  1993/01/05  17:42:23  kawamoto
+ * デバッグオプションを外して再コンパイル
+ * 「ドライブが用意されていない」エラーを回避
  *
- *	Revision 2.1  1992/12/19  11:42:08  kawamoto
- *	公表バージョン (ver 0.04, rev 2.1)
+ * Revision 2.1  1992/12/19  11:42:08  kawamoto
+ * 公表バージョン (ver 0.04, rev 2.1)
  *
- *	Revision 1.4  1992/12/12  11:54:46  kawamoto
- *	version 0.04
+ * Revision 1.4  1992/12/12  11:54:46  kawamoto
+ * version 0.04
  *
- *	Revision 1.3  1992/11/28  11:46:10  kawamoto
- *	version 0.03b
+ * Revision 1.3  1992/11/28  11:46:10  kawamoto
+ * version 0.03b
  *
- *	Revision 1.2  1992/11/15  17:29:36  kawamoto
- *	Ver 0.03 without entering bad sectors.
+ * Revision 1.2  1992/11/15  17:29:36  kawamoto
+ * Ver 0.03 without entering bad sectors.
  *
- *	Revision 1.1  1992/11/14  22:26:41  kawamoto
- *	Initial revision
+ * Revision 1.1  1992/11/14  22:26:41  kawamoto
+ * Initial revision
  */
+
+/* Copyright (C) 2023 TcbnErik */
+
+#ifndef FSCK_H
+#define FSCK_H
 
 #include "config.h"
 
@@ -79,32 +84,32 @@ extern normal_flags flags;
 #define ERROR_VIRTUAL_DEVICE -102
 
 typedef struct {
-  unsigned int value  :16;
-  unsigned int type   : 2;
-#define FAT_TYPE_LINKING   0
-#define FAT_TYPE_END       1
-#define FAT_TYPE_FREE      2
-#define FAT_TYPE_OTHERS    3
-  unsigned int refer  : 2;
-#define FAT_REFER_OK       0
-#define FAT_REFER_FIXED    1
-#define FAT_REFER_END      2
-#define FAT_REFER_OUTOF    3
-  unsigned int refered: 2;
-#define FAT_REFERED_NO     0
-#define FAT_REFERED_ONE    1
-#define FAT_REFERED_MANY   2
-#define FAT_REFERED_FIXED  3
-  unsigned int loop   : 2;
+  unsigned int value : 16;
+  unsigned int type : 2;
+#define FAT_TYPE_LINKING 0
+#define FAT_TYPE_END 1
+#define FAT_TYPE_FREE 2
+#define FAT_TYPE_OTHERS 3
+  unsigned int refer : 2;
+#define FAT_REFER_OK 0
+#define FAT_REFER_FIXED 1
+#define FAT_REFER_END 2
+#define FAT_REFER_OUTOF 3
+  unsigned int refered : 2;
+#define FAT_REFERED_NO 0
+#define FAT_REFERED_ONE 1
+#define FAT_REFERED_MANY 2
+#define FAT_REFERED_FIXED 3
+  unsigned int loop : 2;
 #define FAT_LOOP_UNDECIDED 0
-#define FAT_LOOP_YES       1
-#define FAT_LOOP_NO        2
+#define FAT_LOOP_YES 1
+#define FAT_LOOP_NO 2
 #define FAT_LOOP_IN_SEARCH 3
   unsigned int badsec : 1;
-#define FAT_BADSEC_OK      0
-#define FAT_BADSEC_YES     1
+#define FAT_BADSEC_OK 0
+#define FAT_BADSEC_YES 1
   unsigned int subdir : 1;
-#define FAT_SUBDIR_NOTYET  0
+#define FAT_SUBDIR_NOTYET 0
 #define FAT_SUBDIR_ALREADY 1
 } FATbuf;
 
@@ -149,11 +154,11 @@ extern int set_bad_sector(disk *disk_ptr, int sector_offset);
 extern int is_bad_sector(disk *disk_ptr, int sector_offset);
 extern int is_bad_cluster(disk *disk_ptr, int cluster_offset);
 extern void read_sector(void *buffer, disk *disk_ptr, int from, int num);
-extern void read_cluster(void *buffer, disk *disk_ptr,
-			 unsigned short from, unsigned short num);
+extern void read_cluster(void *buffer, disk *disk_ptr, unsigned short from,
+                         unsigned short num);
 extern void write_sector(const void *buffer, disk *disk_ptr, int from, int num);
 extern void write_cluster(const void *buffer, disk *disk_ptr,
-			  unsigned short from, unsigned short num);
+                          unsigned short from, unsigned short num);
 
 /* root.c */
 
@@ -190,10 +195,12 @@ extern int keyinp(void);
 extern void prhead(const char *jstring, const char *string);
 extern void print_(const char *jformat, const char *format);
 extern void print_int(const char *jformat, const char *format, int arg1);
-extern void print_str(const char *jformat, const char *format, const char *arg1);
+extern void print_str(const char *jformat, const char *format,
+                      const char *arg1);
 extern void prerr_(const char *jformat, const char *format);
 extern void prerr_int(const char *jformat, const char *format, int arg1);
-extern void prerr_str(const char *jformat, const char *format, const char *arg1);
+extern void prerr_str(const char *jformat, const char *format,
+                      const char *arg1);
 extern void prerr_datetime(unsigned long datetime);
 extern void prerr_attribute(unsigned char attribute);
 extern void end_line(void);
@@ -207,4 +214,7 @@ extern void setup(void);
 extern void volatile cleanup_exit(int code);
 extern void set_error_mode(int ignore);
 extern int diskred(disk *disk_ptr, unsigned char *adr, int sector, int seclen);
-extern int diskwrt(disk *disk_ptr, const unsigned char *adr, int sector, int seclen);
+extern int diskwrt(disk *disk_ptr, const unsigned char *adr, int sector,
+                   int seclen);
+
+#endif

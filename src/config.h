@@ -6,11 +6,11 @@
  * $Revision: 1.2 $
  * $Date: 1993/12/22 07:57:26 $
  * $Log: config.h,v $
- *	Revision 1.2  1993/12/22  07:57:26  kawamoto
- *	cvs admin -c " *\t" を行なった
+ * Revision 1.2  1993/12/22  07:57:26  kawamoto
+ * cvs admin -c " *\t" を行なった
  *
- *	Revision 1.1  1993/12/22  07:56:13  kawamoto
- *	Ver 1.02a ... エラー表示に、対象セクタ番号範囲を追加
+ * Revision 1.1  1993/12/22  07:56:13  kawamoto
+ * Ver 1.02a ... エラー表示に、対象セクタ番号範囲を追加
  */
 
 /* デバッグを行なう時、次の define   */

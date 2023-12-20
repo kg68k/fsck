@@ -24,7 +24,7 @@ directories: $(BLD_DIR)
 srcdir_mk:
 	rm -f $(SRCDIR_MK)
 	echo "SRC_DIR = $(CURDIR)/src" > $(SRCDIR_MK)
-	
+
 $(BLD_DIR):
 	$(MKDIR_P) $@
 
